@@ -31,11 +31,11 @@ describe("/api/articles/:article_id", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.article).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
+            author: "rogersop",
+            title: "Seven inspirational thought leaders from Manchester UK",
+            article_id: 10,
             body: expect.any(String),
-            topic: expect.any(String),
+            topic: "mitch",
             created_at: expect.any(String),
             votes: expect.any(Number),
           });
