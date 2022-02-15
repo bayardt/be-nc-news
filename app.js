@@ -1,6 +1,12 @@
 const express = require("express");
 const { getTopics } = require("./controllers/topics.controllers");
 const { getArticleById } = require("./controllers/articles.controllers");
+const {
+  handleCustomErrors,
+  handlePsqlErrors,
+  handleServerErrors,
+} = require("./errors/index");
+
 const app = express();
 
 app.use(express.json());
@@ -13,16 +19,8 @@ app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Error 404 - Route not found" });
 });
 
-app.use((err, req, res, next) => {
-  if (err.status && err.msg) {
-    res.status(err.status).send({ msg: err.msg });
-  }
-  if (err.code === "22P02") {
-    res.status(400).send({ msg: "Bad Request" });
-  } else {
-    res.status(500).send({ msg: "Internal Server Error" });
-    console.log(err);
-  }
-});
+app.use(handleCustomErrors);
+app.use(handlePsqlErrors);
+app.use(handleServerErrors);
 
 module.exports = app;

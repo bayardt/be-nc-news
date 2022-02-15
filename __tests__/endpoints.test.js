@@ -41,7 +41,7 @@ describe("/api/articles/:article_id", () => {
           });
         });
     });
-    test("status: 404 - responds with a 404 if route does not exist.", () => {
+    test("status: 404 - responds with a 404 if requested ID does not exist.", () => {
       return request(app)
         .get("/api/articles/10000")
         .expect(404)
