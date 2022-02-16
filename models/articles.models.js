@@ -20,7 +20,8 @@ exports.selectArticleById = (requestedArticleId) => {
 exports.adjustArticleVotes = (requestedArticleId, voteCount) => {
   return db
     .query(
-      `UPDATE articles SET votes = votes + ${voteCount} WHERE article_id = ${requestedArticleId} RETURNING *;`,
+      "UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;",
+      [voteCount, requestedArticleId]
     )
     .then(({ rows }) => {
       const article = rows[0];
