@@ -58,4 +58,70 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+  describe("PATCH", () => {
+    test("should update votes on article and return correct article.", () => {
+      return request(app)
+        .patch("/api/articles/10")
+        .send({ inc_votes: 15 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject({
+            author: "rogersop",
+            title: "Seven inspirational thought leaders from Manchester UK",
+            article_id: 10,
+            body: expect.any(String),
+            topic: "mitch",
+            created_at: expect.any(String),
+            votes: 15,
+          });
+        });
+    });
+    test("should return 400 when submitting invalid key.", () => {
+      return request(app)
+        .patch("/api/articles/10")
+        .send({ change_votes: 15 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("should return 400 when submitting invalid value.", () => {
+      return request(app)
+        .patch("/api/articles/10")
+        .send({ inc_votes: "banana" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("should return 400 when submitting multiple keys.", () => {
+      return request(app)
+        .patch("/api/articles/10")
+        .send({ change_votes: 15, title: "New Name" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("should return 404 when patching to an article that doesn't exist.", () => {
+      return request(app)
+        .patch("/api/articles/1000000")
+        .send({ change_votes: 15})
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "No article found for article_id: 1000000"
+          );
+        });
+    });
+    test("should return 400 when patching to an invalid article ID.", () => {
+      return request(app)
+        .patch("/api/articles/ten")
+        .send({ change_votes: 15})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+  });
 });
