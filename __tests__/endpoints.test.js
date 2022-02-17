@@ -125,3 +125,11 @@ describe("/api/articles/:article_id", () => {
     });
   });
 });
+
+describe("/api/users", () => {
+  describe("GET", () => {
+    test("status: 200 - responds with an array of all the user objects.", () => {
+      return request(app).get("/api/users").expect(200);
+    });
+  });
+});
