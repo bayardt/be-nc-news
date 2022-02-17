@@ -42,8 +42,8 @@ describe("Articles", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body.length > 1).toBe(true);
-            expect(body[0]).toMatchObject({
+            expect(body.articles.length > 1).toBe(true);
+            expect(body.articles[0]).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
@@ -56,27 +56,26 @@ describe("Articles", () => {
       });
       test("should return articles by descending date", () => {
         return request(app)
-          .get("/api/articles")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body[0]).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              body: expect.any(String),
-              topic: expect.any(String),
-              created_at: "2020-11-03T09:12:00.000Z",
-              votes: expect.any(Number),
-            });
-            expect(body[body.length - 1]).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              body: expect.any(String),
-              topic: expect.any(String),
-              created_at: "2020-01-07T14:08:00.000Z",
-              votes: expect.any(Number),
-            });
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0]).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            topic: expect.any(String),
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: expect.any(Number),
+          });
+          expect(body.articles[body.articles.length - 1]).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            topic: expect.any(String),
+            created_at: "2020-01-07T14:08:00.000Z",
+            votes: expect.any(Number),
           });
       });
     });
