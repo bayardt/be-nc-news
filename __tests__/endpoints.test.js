@@ -42,8 +42,8 @@ describe("Articles", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body.length > 1).toBe(true);
-            expect(body[0]).toMatchObject({
+            expect(body.articles.length > 1).toBe(true);
+            expect(body.articles[0]).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
@@ -59,7 +59,7 @@ describe("Articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          expect(body[0]).toMatchObject({
+          expect(body.articles[0]).toMatchObject({
             author: expect.any(String),
             title: expect.any(String),
             article_id: expect.any(Number),
@@ -68,7 +68,7 @@ describe("Articles", () => {
             created_at: "2020-11-03T09:12:00.000Z",
             votes: expect.any(Number),
           });
-          expect(body[body.length - 1]).toMatchObject({
+          expect(body.articles[body.articles.length - 1]).toMatchObject({
             author: expect.any(String),
             title: expect.any(String),
             article_id: expect.any(Number),
