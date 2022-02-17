@@ -10,7 +10,16 @@ afterAll(() => db.end());
 describe("/api/topics", () => {
   describe("GET", () => {
     test("status: 200 - responds with an array of all the topic objects.", () => {
-      return request(app).get("/api/topics").expect(200);
+      return request(app)
+        .get("/api/topics")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.topics.length > 1).toBe(true);
+          expect(body.topics[0]).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
     });
     test("status: 404 - responds with a 404 if route does not exist.", () => {
       return request(app)
@@ -106,18 +115,16 @@ describe("/api/articles/:article_id", () => {
     test("should return 404 when patching to an article that doesn't exist.", () => {
       return request(app)
         .patch("/api/articles/1000000")
-        .send({ change_votes: 15})
+        .send({ change_votes: 15 })
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe(
-            "No article found for article_id: 1000000"
-          );
+          expect(body.msg).toBe("No article found for article_id: 1000000");
         });
     });
     test("should return 400 when patching to an invalid article ID.", () => {
       return request(app)
         .patch("/api/articles/ten")
-        .send({ change_votes: 15})
+        .send({ change_votes: 15 })
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request");
@@ -128,8 +135,18 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api/users", () => {
   describe("GET", () => {
-    test("status: 200 - responds with an array of all the user objects.", () => {
-      return request(app).get("/api/users").expect(200);
+    test("should return a list of users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users.length > 1).toBe(true);
+          expect(body.users[0]).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
     });
   });
 });
