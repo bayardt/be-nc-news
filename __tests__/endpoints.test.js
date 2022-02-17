@@ -56,31 +56,31 @@ describe("Articles", () => {
       });
       test("should return articles by descending date", () => {
         return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then(({ body }) => {
-          expect(body[0]).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            body: expect.any(String),
-            topic: expect.any(String),
-            created_at: "2020-11-03T09:12:00.000Z",
-            votes: expect.any(Number),
-          });
-          expect(body[body.length - 1]).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            body: expect.any(String),
-            topic: expect.any(String),
-            created_at: "2020-01-07T14:08:00.000Z",
-            votes: expect.any(Number),
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body[0]).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: "2020-11-03T09:12:00.000Z",
+              votes: expect.any(Number),
+            });
+            expect(body[body.length - 1]).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: "2020-01-07T14:08:00.000Z",
+              votes: expect.any(Number),
+            });
           });
       });
     });
   });
-});
   describe("/api/articles/:article_id", () => {
     describe("GET", () => {
       test("status: 200 - responds with the specified article including comment count.", () => {
@@ -99,22 +99,23 @@ describe("Articles", () => {
               comment_count: "0",
             });
           });
-
-          return request(app)
-            .get("/api/articles/1")
-            .expect(200)
-            .then(({ body }) => {
-              expect(body.article).toMatchObject({
-                author: expect.any(String),
-                title: expect.any(String),
-                article_id: 1,
-                body: expect.any(String),
-                topic: expect.any(String),
-                created_at: expect.any(String),
-                votes: expect.any(Number),
-                comment_count: "11",
-              });
+      });
+      test("should respond with the specified article including comment count.", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: 1,
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: "11",
             });
+          });
       });
       test("status: 404 - responds with a 404 if requested ID does not exist.", () => {
         return request(app)
