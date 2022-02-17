@@ -8,9 +8,10 @@ exports.selectArticles = () => {
 
 exports.selectArticleById = (requestedArticleId) => {
   return db
-    .query("SELECT * FROM articles WHERE article_id = $1;", [
-      requestedArticleId,
-    ])
+    .query(
+      "SELECT articles.*, COUNT(comments.body) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id ;",
+      [requestedArticleId]
+    )
     .then(({ rows }) => {
       const article = rows[0];
       if (!article) {

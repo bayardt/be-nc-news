@@ -80,10 +80,9 @@ describe("Articles", () => {
       });
     });
   });
-});
   describe("/api/articles/:article_id", () => {
     describe("GET", () => {
-      test("status: 200 - responds with the specified article.", () => {
+      test("status: 200 - responds with the specified article including comment count.", () => {
         return request(app)
           .get("/api/articles/10")
           .expect(200)
@@ -96,6 +95,24 @@ describe("Articles", () => {
               topic: "mitch",
               created_at: expect.any(String),
               votes: expect.any(Number),
+              comment_count: "0",
+            });
+          });
+      });
+      test("should respond with the specified article including comment count.", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: 1,
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: "11",
             });
           });
       });
