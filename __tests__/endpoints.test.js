@@ -198,6 +198,51 @@ describe("Articles", () => {
       });
     });
   });
+  describe("/api/articles/:article_id/comments", () => {
+    describe("GET", () => {
+      test("status: 200 - responds with the specified article including comment count.", () => {
+        return request(app)
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments[0]).toMatchObject({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: 1,
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            });
+          });
+      });
+      test("status: 200 - responds with custom message if there are no comments.", () => {
+        return request(app)
+          .get("/api/articles/10/comments")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments).toBe(
+              "There are no comments for this article."
+            );
+          });
+      });
+      test("status: 404 - responds with a 404 if requested ID does not exist.", () => {
+        return request(app)
+          .get("/api/articles/10000/comments")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No article found for article_id: 10000");
+          });
+      });
+      test("status: 400 - responds with a 400 if ID is not valid.", () => {
+        return request(app)
+          .get("/api/articles/ten/comments")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request");
+          });
+      });
+    });
+  });
 });
 
 describe("Users", () => {
