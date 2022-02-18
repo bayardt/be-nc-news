@@ -253,7 +253,16 @@ describe("Articles", () => {
           .send({ username: "bayard", body: "I am posting a comment!" })
           .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe("Bad Request");
+            expect(body.msg).toBe("Bad Request: Username does not exist");
+          });
+      });
+      test("should return an error if article does not exist", () => {
+        return request(app)
+          .post("/api/articles/10000/comments")
+          .send({ username: "bayard", body: "I am posting a comment!" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request: Article does not exist");
           });
       });
     });

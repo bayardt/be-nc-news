@@ -26,18 +26,20 @@ exports.selectArticleById = (requestedArticleId) => {
 
 exports.selectCommentsByArticleId = (requestedArticleId) => {
   return db
-    .query("SELECT * FROM comments WHERE article_id = $1 ;", [
-      requestedArticleId,
-    ])
+    .query(
+      "SELECT comments.*, articles.article_id FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 ;",
+      [requestedArticleId]
+    )
     .then(({ rows }) => {
       const comments = rows;
-      if (!comments) {
+      if (!comments[0]) {
         return Promise.reject({
           status: 404,
           msg: `No article found for article_id: ${requestedArticleId}`,
         });
       }
-      if (comments[0] === undefined) return "There are no comments for this article."
+      if (!comments[0].comment_id)
+        return "There are no comments for this article.";
       return comments;
     });
 };
