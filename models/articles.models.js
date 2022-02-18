@@ -1,9 +1,19 @@
 const db = require("../db/connection");
 
-exports.selectArticles = () => {
+exports.selectArticles = (
+  sortingQuery = "created_at",
+  orderQuery = "desc",
+  topicQuery
+) => {
+  const topicSearch = topicQuery ? `WHERE topic = '${topicQuery}'` : "";
   return db
-    .query("SELECT articles.*, COUNT(comments.body) AS comment_count FROM articles LEFT JOIN comments on articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY created_at DESC;")
-    .then(({ rows }) => rows);
+    .query(
+      `SELECT articles.*, COUNT(comments.body) AS comment_count FROM articles LEFT JOIN comments on articles.article_id = comments.article_id ${topicSearch} GROUP BY articles.article_id ORDER BY ${sortingQuery} ${orderQuery};`
+    )
+    .then(({ rows }) => {
+      const articles = rows;
+      return articles;
+    });
 };
 
 exports.selectArticleById = (requestedArticleId) => {
@@ -62,7 +72,17 @@ exports.adjustArticleVotes = (requestedArticleId, voteCount) => {
     });
 };
 
-exports.insertCommentByArticleId = (requestedArticleId, commentAuthor, commentBody) => {
+exports.insertCommentByArticleId = (
+  requestedArticleId,
+  commentAuthor,
+  commentBody
+) => {
+  if (!commentBody) {
+    return Promise.reject({
+      status: 400,
+      msg: `You cannot submit an empty comment.`,
+    });
+  }
   return db
     .query(
       "INSERT INTO comments (body, article_id, author) VALUES ($1, $2, $3) RETURNING *;",

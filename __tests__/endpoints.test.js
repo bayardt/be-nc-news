@@ -42,8 +42,8 @@ describe("Articles", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body.length > 1).toBe(true);
-            expect(body[0]).toMatchObject({
+            expect(body.articles.length > 1).toBe(true);
+            expect(body.articles[0]).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
@@ -60,7 +60,7 @@ describe("Articles", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body[0]).toMatchObject({
+            expect(body.articles[0]).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
@@ -70,7 +70,7 @@ describe("Articles", () => {
               votes: expect.any(Number),
               comment_count: "2",
             });
-            expect(body[body.length - 1]).toMatchObject({
+            expect(body.articles[body.articles.length - 1]).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
@@ -79,6 +79,51 @@ describe("Articles", () => {
               created_at: "2020-01-07T14:08:00.000Z",
               votes: expect.any(Number),
               comment_count: "0",
+            });
+          });
+      });
+      test("should correctly return articles based on query of sort_by and order", () => {
+        return request(app)
+          .get("/api/articles?sort_by=author&order=asc")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles.length > 1).toBe(true);
+            expect(body.articles[0]).toMatchObject({
+              author: "butter_bridge",
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+            });
+          });
+      });
+      test("should correctly return articles based on query of topic", () => {
+        return request(app)
+          .get("/api/articles?sort_by=author&order=asc&topic=cats")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles[0]).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              body: expect.any(String),
+              topic: "cats",
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+            });
+            expect(body.articles[body.articles.length-1]).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              body: expect.any(String),
+              topic: "cats",
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
             });
           });
       });
@@ -263,6 +308,15 @@ describe("Articles", () => {
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Bad Request: Article does not exist");
+          });
+      });
+      test("should return an error if user submits blank comment", () => {
+        return request(app)
+          .post("/api/articles/10/comments")
+          .send({ username: "rogersop", body: "" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("You cannot submit an empty comment.");
           });
       });
     });
