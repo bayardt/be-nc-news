@@ -51,7 +51,7 @@ describe("Articles", () => {
               topic: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
-              comment_count: expect.any(String)
+              comment_count: expect.any(String),
             });
           });
       });
@@ -115,7 +115,7 @@ describe("Articles", () => {
               votes: expect.any(Number),
               comment_count: expect.any(String),
             });
-            expect(body.articles[body.articles.length-1]).toMatchObject({
+            expect(body.articles[body.articles.length - 1]).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
@@ -275,8 +275,8 @@ describe("Articles", () => {
           });
       });
     });
-    describe('POST', () => {
-      test('should post a new comment on specified article', () => {
+    describe("POST", () => {
+      test("should post a new comment on specified article", () => {
         return request(app)
           .post("/api/articles/10/comments")
           .send({ username: "rogersop", body: "I am posting a comment!" })
@@ -337,6 +337,37 @@ describe("Users", () => {
               name: expect.any(String),
               avatar_url: expect.any(String),
             });
+          });
+      });
+    });
+  });
+});
+
+describe("Comments", () => {
+  describe("/api/comments", () => {
+    describe("DELETE", () => {
+      test("should remove specified comment", () => {
+        return request(app)
+          .delete("/api/comments/1")
+          .expect(204)
+          .then(({ body }) => {
+            expect(body.msg).toBe(undefined);
+          });
+      });
+      test("should return an error if user attempts to delete a non-existing comment", () => {
+        return request(app)
+          .delete("/api/comments/10000000")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No comment found for comment_id: 10000000");
+          });
+      });
+      test("should return an error if user attempts to delete an invalid comment", () => {
+        return request(app)
+          .delete("/api/comments/ten")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request");
           });
       });
     });
