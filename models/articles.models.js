@@ -59,3 +59,15 @@ exports.adjustArticleVotes = (requestedArticleId, voteCount) => {
       return article;
     });
 };
+
+exports.insertCommentByArticleId = (requestedArticleId, commentAuthor, commentBody) => {
+  return db
+    .query(
+      "INSERT INTO comments (body, article_id, author) VALUES ($1, $2, $3) RETURNING *;",
+      [commentBody, requestedArticleId, commentAuthor]
+    )
+    .then(({ rows }) => {
+      const comment = rows[0];
+      return comment;
+    });
+};

@@ -230,6 +230,33 @@ describe("Articles", () => {
           });
       });
     });
+    describe('POST', () => {
+      test('should post a new comment on specified article', () => {
+        return request(app)
+          .post("/api/articles/10/comments")
+          .send({ username: "rogersop", body: "I am posting a comment!" })
+          .expect(201)
+          .then(({ body }) => {
+            expect(body.comment).toMatchObject({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: 10,
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            });
+          });
+      });
+      test("should return an error if user does not exist", () => {
+        return request(app)
+          .post("/api/articles/10/comments")
+          .send({ username: "bayard", body: "I am posting a comment!" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request");
+          });
+      });
+    });
   });
 });
 
