@@ -2,7 +2,7 @@ const db = require("../db/connection");
 
 exports.selectArticles = () => {
   return db
-    .query("SELECT * FROM articles ORDER BY created_at DESC;")
+    .query("SELECT articles.*, COUNT(comments.body) AS comment_count FROM articles LEFT JOIN comments on articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY created_at DESC;")
     .then(({ rows }) => rows);
 };
 
