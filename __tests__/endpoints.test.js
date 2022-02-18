@@ -36,7 +36,7 @@ describe("Topics", () => {
 
 describe("Articles", () => {
   describe("/api/articles", () => {
-    describe.only("GET", () => {
+    describe("GET", () => {
       test("should return a list of articles", () => {
         return request(app)
           .get("/api/articles")
@@ -209,7 +209,6 @@ describe("Articles", () => {
           .get("/api/articles/1/comments")
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body.comments[0]).toMatchObject({
               comment_id: expect.any(Number),
               body: expect.any(String),
