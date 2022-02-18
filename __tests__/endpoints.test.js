@@ -42,8 +42,8 @@ describe("Articles", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body.length > 1).toBe(true);
-            expect(body[0]).toMatchObject({
+            expect(body.articles.length > 1).toBe(true);
+            expect(body.articles[0]).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
@@ -227,6 +227,22 @@ describe("Articles", () => {
             expect(body.comments).toBe(
               "There are no comments for this article."
             );
+          });
+      });
+      test("status: 404 - responds with a 404 if requested ID does not exist.", () => {
+        return request(app)
+          .get("/api/articles/10000/comments")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No article found for article_id: 10000");
+          });
+      });
+      test("status: 400 - responds with a 400 if ID is not valid.", () => {
+        return request(app)
+          .get("/api/articles/ten/comments")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request");
           });
       });
     });

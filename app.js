@@ -29,7 +29,9 @@ app.all("/*", (req, res) => {
 });
 
 app.use(handleCustomErrors);
+
 app.use(handlePsqlErrors);
+
 app.use(handleServerErrors);
 
 
