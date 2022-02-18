@@ -24,6 +24,24 @@ exports.selectArticleById = (requestedArticleId) => {
     });
 };
 
+exports.selectCommentsByArticleId = (requestedArticleId) => {
+  return db
+    .query("SELECT * FROM comments WHERE article_id = $1 ;", [
+      requestedArticleId,
+    ])
+    .then(({ rows }) => {
+      const comments = rows;
+      if (!comments) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article found for article_id: ${requestedArticleId}`,
+        });
+      }
+      if (comments[0] === undefined) return "There are no comments for this article."
+      return comments;
+    });
+};
+
 exports.adjustArticleVotes = (requestedArticleId, voteCount) => {
   return db
     .query(

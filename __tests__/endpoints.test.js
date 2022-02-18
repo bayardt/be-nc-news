@@ -199,6 +199,34 @@ describe("Articles", () => {
       });
     });
   });
+  describe("/apo/articles/:article_id/comments", () => {
+    describe("GET", () => {
+      test("status: 200 - responds with the specified article including comment count.", () => {
+        return request(app)
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body)
+            expect(body.comments[0]).toMatchObject({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: 1,
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            });
+          });
+      });
+      test("status: 200 - responds with custom message if there are no comments.", () => {
+        return request(app)
+          .get("/api/articles/10/comments")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments).toBe("There are no comments for this article.");
+          });
+      });
+    });
+  });
 });
 
 describe("Users", () => {
