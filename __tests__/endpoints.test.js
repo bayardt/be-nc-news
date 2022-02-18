@@ -199,14 +199,14 @@ describe("Articles", () => {
       });
     });
   });
-  describe("/apo/articles/:article_id/comments", () => {
+  describe("/api/articles/:article_id/comments", () => {
     describe("GET", () => {
       test("status: 200 - responds with the specified article including comment count.", () => {
         return request(app)
           .get("/api/articles/1/comments")
           .expect(200)
           .then(({ body }) => {
-            console.log(body)
+            console.log(body);
             expect(body.comments[0]).toMatchObject({
               comment_id: expect.any(Number),
               body: expect.any(String),
@@ -222,7 +222,9 @@ describe("Articles", () => {
           .get("/api/articles/10/comments")
           .expect(200)
           .then(({ body }) => {
-            expect(body.comments).toBe("There are no comments for this article.");
+            expect(body.comments).toBe(
+              "There are no comments for this article."
+            );
           });
       });
     });
