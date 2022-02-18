@@ -26,9 +26,10 @@ exports.selectArticleById = (requestedArticleId) => {
 
 exports.selectCommentsByArticleId = (requestedArticleId) => {
   return db
-    .query("SELECT comments.*, articles.article_id FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 ;", [
-      requestedArticleId,
-    ])
+    .query(
+      "SELECT comments.*, articles.article_id FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 ;",
+      [requestedArticleId]
+    )
     .then(({ rows }) => {
       const comments = rows;
       if (!comments[0]) {
@@ -37,7 +38,8 @@ exports.selectCommentsByArticleId = (requestedArticleId) => {
           msg: `No article found for article_id: ${requestedArticleId}`,
         });
       }
-      if (!comments[0].comment_id) return "There are no comments for this article."
+      if (!comments[0].comment_id)
+        return "There are no comments for this article.";
       return comments;
     });
 };
@@ -57,5 +59,17 @@ exports.adjustArticleVotes = (requestedArticleId, voteCount) => {
         });
       }
       return article;
+    });
+};
+
+exports.insertCommentByArticleId = (requestedArticleId, commentAuthor, commentBody) => {
+  return db
+    .query(
+      "INSERT INTO comments (body, article_id, author) VALUES ($1, $2, $3) RETURNING *;",
+      [commentBody, requestedArticleId, commentAuthor]
+    )
+    .then(({ rows }) => {
+      const comment = rows[0];
+      return comment;
     });
 };

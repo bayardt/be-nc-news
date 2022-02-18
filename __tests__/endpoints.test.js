@@ -42,8 +42,8 @@ describe("Articles", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles.length > 1).toBe(true);
-            expect(body.articles[0]).toMatchObject({
+            expect(body.length > 1).toBe(true);
+            expect(body[0]).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
@@ -229,20 +229,40 @@ describe("Articles", () => {
             );
           });
       });
-      test("status: 404 - responds with a 404 if requested ID does not exist.", () => {
+    });
+    describe('POST', () => {
+      test('should post a new comment on specified article', () => {
         return request(app)
-          .get("/api/articles/10000/comments")
-          .expect(404)
+          .post("/api/articles/10/comments")
+          .send({ username: "rogersop", body: "I am posting a comment!" })
+          .expect(201)
           .then(({ body }) => {
-            expect(body.msg).toBe("No article found for article_id: 10000");
+            expect(body.comment).toMatchObject({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: 10,
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            });
           });
       });
-      test("status: 400 - responds with a 400 if ID is not valid.", () => {
+      test("should return an error if user does not exist", () => {
         return request(app)
-          .get("/api/articles/ten/comments")
+          .post("/api/articles/10/comments")
+          .send({ username: "bayard", body: "I am posting a comment!" })
           .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe("Bad Request");
+            expect(body.msg).toBe("Bad Request: Username does not exist");
+          });
+      });
+      test("should return an error if article does not exist", () => {
+        return request(app)
+          .post("/api/articles/10000/comments")
+          .send({ username: "bayard", body: "I am posting a comment!" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request: Article does not exist");
           });
       });
     });
