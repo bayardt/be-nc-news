@@ -37,8 +37,7 @@ Log into Heroku using their command line interface:
 heroku login
 ```
 
-Create an app in an active git directory. Doing this in the folder where your server exists is a good start, as this is what you will be hosting.
-
+he
 ```bash
 heroku create your-app-name
 ```
