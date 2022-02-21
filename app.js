@@ -1,4 +1,5 @@
 const express = require("express");
+const { getApi } = require("./controllers/api.controllers")
 const { getTopics } = require("./controllers/topics.controllers");
 const {
   getArticleById,
@@ -18,6 +19,9 @@ const {
 const app = express();
 
 app.use(express.json());
+
+// api
+app.get("/api", getApi)
 
 // Topics
 app.get("/api/topics", getTopics);

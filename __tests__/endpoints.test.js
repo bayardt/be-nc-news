@@ -7,6 +7,21 @@ const db = require("../db/connection");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+describe('Endpoints', () => {
+  describe('/api', () => {
+    test('should return JSON of available endpoints', () => {
+      return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.endpoints).toMatchObject({
+          'GET /api': expect.any(Object)
+        })
+      })
+    });
+  });
+});
+
 describe("Topics", () => {
   describe("/api/topics", () => {
     describe("GET", () => {
@@ -60,26 +75,7 @@ describe("Articles", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0]).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              body: expect.any(String),
-              topic: expect.any(String),
-              created_at: "2020-11-03T09:12:00.000Z",
-              votes: expect.any(Number),
-              comment_count: "2",
-            });
-            expect(body.articles[body.articles.length - 1]).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              body: expect.any(String),
-              topic: expect.any(String),
-              created_at: "2020-01-07T14:08:00.000Z",
-              votes: expect.any(Number),
-              comment_count: "0",
-            });
+            expect(body.articles).toBeSortedBy('created_at', {descending: true});
           });
       });
       test("should correctly return articles based on query of sort_by and order", () => {
@@ -102,29 +98,36 @@ describe("Articles", () => {
       });
       test("should correctly return articles based on query of topic", () => {
         return request(app)
-          .get("/api/articles?sort_by=author&order=asc&topic=cats")
+          .get("/api/articles?sort_by=author&order=asc&topic=mitch")
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0]).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              body: expect.any(String),
-              topic: "cats",
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              comment_count: expect.any(String),
+            expect(body.articles).toBeSortedBy("author", {
+              ascending: true,
             });
-            expect(body.articles[body.articles.length - 1]).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              body: expect.any(String),
-              topic: "cats",
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              comment_count: expect.any(String),
-            });
+          });
+      });
+      test("should return an error on bad sort query", () => {
+        return request(app)
+          .get("/api/articles?sort_by=smell&order=asc&topic=mitch")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request");
+          });
+      });
+      test("should return an error on bad order query", () => {
+        return request(app)
+          .get("/api/articles?sort_by=author&order=goingup&topic=mitch")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid query");
+          });
+      });
+      test("should return an error if topic doesn't exist", () => {
+        return request(app)
+          .get("/api/articles?sort_by=author&order=asc&topic=elephants")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No topic found for: elephants");
           });
       });
     });

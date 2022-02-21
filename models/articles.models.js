@@ -12,7 +12,13 @@ exports.selectArticles = (
     )
     .then(({ rows }) => {
       const articles = rows;
-      return articles;
+      if (articles[0] == undefined) {
+        return Promise.reject({
+          status: 404,
+          msg: `No topic found for: ${topicQuery}`,
+        });
+      }
+      return articles
     });
 };
 
