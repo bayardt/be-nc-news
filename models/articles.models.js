@@ -3,12 +3,13 @@ const db = require("../db/connection");
 exports.selectArticles = (
   sortingQuery = "created_at",
   orderQuery = "desc",
-  topicQuery
+  topicQuery,
+  limitQuery = 10
 ) => {
   const topicSearch = topicQuery ? `WHERE topic = '${topicQuery}'` : "";
   return db
     .query(
-      `SELECT articles.*, COUNT(comments.body) AS comment_count FROM articles LEFT JOIN comments on articles.article_id = comments.article_id ${topicSearch} GROUP BY articles.article_id ORDER BY ${sortingQuery} ${orderQuery} LIMIT 10;`
+      `SELECT articles.*, COUNT(comments.body) AS comment_count FROM articles LEFT JOIN comments on articles.article_id = comments.article_id ${topicSearch} GROUP BY articles.article_id ORDER BY ${sortingQuery} ${orderQuery} LIMIT ${limitQuery};`
     )
     .then(({ rows }) => {
       const articles = rows;
