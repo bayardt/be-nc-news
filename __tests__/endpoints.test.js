@@ -329,11 +329,12 @@ describe("Articles", () => {
 describe("Users", () => {
   describe("/api/users", () => {
     describe("GET", () => {
-      test("should return a list of users", () => {
+      test.only("should return a list of users", () => {
         return request(app)
           .get("/api/users")
           .expect(200)
           .then(({ body }) => {
+            console.log(body)
             expect(body.users.length > 1).toBe(true);
             expect(body.users[0]).toMatchObject({
               username: expect.any(String),
