@@ -329,13 +329,29 @@ describe("Articles", () => {
 describe("Users", () => {
   describe("/api/users", () => {
     describe("GET", () => {
-      test.only("should return a list of users", () => {
+      test("should return a list of users", () => {
         return request(app)
           .get("/api/users")
           .expect(200)
           .then(({ body }) => {
-            console.log(body)
             expect(body.users.length > 1).toBe(true);
+            expect(body.users[0]).toMatchObject({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            });
+          });
+      });
+    });
+  });
+  describe("/api/users?username=tickle122", () => {
+    describe("GET", () => {
+      test.only("should return one user", () => {
+        return request(app)
+          .get("/api/users?username=rogersop")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.users.length === 1).toBe(true);
             expect(body.users[0]).toMatchObject({
               username: expect.any(String),
               name: expect.any(String),
