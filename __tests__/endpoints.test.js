@@ -7,17 +7,17 @@ const db = require("../db/connection");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe('Endpoints', () => {
-  describe('/api', () => {
-    test('should return JSON of available endpoints', () => {
+describe("Endpoints", () => {
+  describe("/api", () => {
+    test("should return JSON of available endpoints", () => {
       return request(app)
-      .get("/api")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.endpoints).toMatchObject({
-          'GET /api': expect.any(Object)
-        })
-      })
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.endpoints).toMatchObject({
+            "GET /api": expect.any(Object),
+          });
+        });
     });
   });
 });
@@ -75,7 +75,9 @@ describe("Articles", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles).toBeSortedBy('created_at', {descending: true});
+            expect(body.articles).toBeSortedBy("created_at", {
+              descending: true,
+            });
           });
       });
       test("should correctly return articles based on query of sort_by and order", () => {
@@ -346,7 +348,7 @@ describe("Users", () => {
   });
   describe("/api/users?username=tickle122", () => {
     describe("GET", () => {
-      test.only("should return one user", () => {
+      test("should return one user", () => {
         return request(app)
           .get("/api/users?username=rogersop")
           .expect(200)
@@ -388,6 +390,19 @@ describe("Comments", () => {
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Bad Request");
+          });
+      });
+    });
+    describe("PATCH", () => {
+      test("should update votes on comment.", () => {
+        return request(app)
+          .patch("/api/comments/10")
+          .send({ inc_votes: 15 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comment).toMatchObject({
+              votes: 15
+            });
           });
       });
     });

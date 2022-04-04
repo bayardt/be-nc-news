@@ -9,7 +9,7 @@ const {
   postCommentByArticleId,
 } = require("./controllers/articles.controllers");
 const { getUsers } = require("./controllers/users.controllers");
-const { removeCommentById } = require("./controllers/comments.controllers")
+const { removeCommentById, updateCommentVotes } = require("./controllers/comments.controllers")
 const {
   handleCustomErrors,
   handlePsqlErrors,
@@ -42,6 +42,7 @@ app.get("/api/users", getUsers);
 
 // Comments
 app.delete("/api/comments/:comment_id", removeCommentById);
+app.patch("/api/comments/:comment_id", updateCommentVotes);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Error 404 - Route not found" });
