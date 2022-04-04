@@ -10,7 +10,7 @@
 <h3 align="center">NC News API</h3>
 
   <p align="center">
-    <a href="https://bayardt-nc-news.netlify.app/">View Demo</a>
+    <a href="https://nc-news-bt22.herokuapp.com/api/">View Hosted Version</a>
   </p>
 </div>
 
@@ -63,7 +63,7 @@ As well as following the instructions below you may want to look at the informat
 
 ### Prerequisites
 
-Node v17.0.0 or higher is recommended on your development machine to work with this repo.
+Node v17.0.0 and PostgreSQL v8.7.3 or higher is recommended on your development machine to work with this repo.
 
 ### Installation
 
