@@ -3,7 +3,7 @@ const db = require("../db/connection");
 exports.deleteCommentById = (requestedCommentId) => {
   return db
     .query(
-      `DELETE FROM comments WHERE comment_id = ${requestedCommentId} RETURNING *; `
+      'DELETE FROM comments WHERE comment_id = $1 RETURNING *;', [requestedCommentId]
     )
     .then(({ rows }) => {
       const deletedComment = rows

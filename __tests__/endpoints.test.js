@@ -82,29 +82,24 @@ describe("Articles", () => {
       });
       test("should correctly return articles based on query of sort_by and order", () => {
         return request(app)
-          .get("/api/articles?sort_by=author&order=asc")
+          .get("/api/articles?sort_by=comment_count&order=asc")
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles.length > 1).toBe(true);
-            expect(body.articles[0]).toMatchObject({
-              author: "butter_bridge",
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              body: expect.any(String),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              comment_count: expect.any(String),
+            expect(body.articles).toBeSortedBy("comment_count", {
+              ascending: true,
             });
           });
       });
       test("should correctly return articles based on query of topic", () => {
         return request(app)
-          .get("/api/articles?sort_by=author&order=asc&topic=mitch")
+          .get("/api/articles?sort_by=created_at&order=asc&topic=mitch")
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles).toBeSortedBy("author", {
+            expect(body.articles).toBeSortedBy("created_at", {
               ascending: true,
+            });
+            body.articles.forEach(article => {
+              expect(article.topic).toEqual("mitch");
             });
           });
       });
@@ -113,12 +108,12 @@ describe("Articles", () => {
           .get("/api/articles?sort_by=smell&order=asc&topic=mitch")
           .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe("Bad Request");
+            expect(body.msg).toBe("Invalid query");
           });
       });
       test("should return an error on bad order query", () => {
         return request(app)
-          .get("/api/articles?sort_by=author&order=goingup&topic=mitch")
+          .get("/api/articles?sort_by=votes&order=goingup&topic=mitch")
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Invalid query");
@@ -126,7 +121,7 @@ describe("Articles", () => {
       });
       test("should return an error if topic doesn't exist", () => {
         return request(app)
-          .get("/api/articles?sort_by=author&order=asc&topic=elephants")
+          .get("/api/articles?sort_by=votes&order=asc&topic=elephants")
           .expect(404)
           .then(({ body }) => {
             expect(body.msg).toBe("No topic found for: elephants");
