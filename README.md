@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/bayardt/nc_news">
+  <a href="https://github.com/bayardt/be_nc_news">
     <img src="NCNewsLogo.png" alt="Logo" height="80">
   </a>
 
