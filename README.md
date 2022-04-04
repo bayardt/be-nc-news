@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/bayardt/nc_news">
-    <img src="src/images/NCNewsLogo.png" alt="Logo" height="80">
+    <img src="NCNewsLogo.png" alt="Logo" height="80">
   </a>
 
 <h3 align="center">NC News API</h3>
