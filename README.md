@@ -69,7 +69,7 @@ Node v17.0.0 and PostgreSQL v8.7.3 or higher is recommended on your development 
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/bayardt/repo_name.git
+   git clone https://github.com/bayardt/be-nc-news.git
    ```
 2. Install NPM packages
    ```sh
